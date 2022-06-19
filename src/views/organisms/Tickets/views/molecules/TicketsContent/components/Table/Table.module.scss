@@ -1,0 +1,92 @@
+.TicketsTable {
+    width: 100%;
+
+    :global(thead) {
+        height: 30px;
+        
+        > tr > th {
+            border-bottom: 1px solid var(--border-color);
+        }
+    }
+    .column {
+        text-align: left;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 10px;
+        line-height: 30px;
+        color: #000;
+    }
+    .title {
+        width: 380px;
+    }
+    .status {
+        width: 150px;
+    }
+    .created_time_utc {
+        width: 220px;
+        text-align: left;
+    }
+
+    .sortable {
+        cursor: pointer;
+
+        & > div {
+            display: flex;
+            align-items: center;
+        }
+
+        .sortIcon {
+            position: relative;
+            top: 2px;
+            margin-left: 5px;
+            font-weight: 400;
+            font-size: 10px;
+            line-height: 10px;
+
+            &.Up {
+                top: 0;
+                transform: rotateX(180deg);
+            }
+        }
+    }
+
+    .row {
+        height: 80px;
+
+        &:not(:last-child) > td {
+            border-bottom: 1px solid var(--border-color);
+        }
+    }
+
+    .TicketName {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        :global(.link) {
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 30px;
+        }
+
+        :global(small) {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 20px;
+        }
+    }
+    
+    .statusWrapper {
+        display: flex;
+        justify-content: flex-start;
+
+        .Status {
+            font-weight: 500;
+            font-size: 10px;
+            line-height: 18px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 14px;
+        }
+    }
+}

@@ -1,0 +1,77 @@
+.Pagination {
+    position: relative;
+    max-width: 1050px;
+    margin: auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 30px 30px 30px;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+
+        li {
+            font-weight: 700;
+            font-size: 12px;
+            line-height: 20px;
+            margin-right: 25px;
+
+            > a {
+                text-decoration: none;
+                color: var(--text-color);
+            }
+
+            &.Active {
+                width: 25px;
+                height: 25px;
+                margin-right: 16px;
+                border-radius: 50%;
+                background-color: #000;
+                color: #FFF;
+                
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+
+    .Nav {
+        display: flex;
+        align-items: center;
+
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 14px;
+
+        .Arrows {
+            display: flex;
+            align-items: center;
+
+            > a, > span {
+                width: 25px;
+                height: 25px;
+                background: #FFFFFF;
+                border: 1px solid var(--border-color);
+                border-radius: 3px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            > span {
+                background-color: transparent;
+                border: 1px solid transparent;
+            }
+
+        }
+    }
+}

@@ -1,0 +1,17 @@
+.Link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-bottom: 15px;
+
+    &:global(.link) {
+        font-size: 11px;
+        line-height: 18px;
+    }
+
+    & > .Icon {
+        margin-left: 5px;
+    }
+}

@@ -1,0 +1,24 @@
+.HelpButton {
+    position: absolute;
+    bottom: 44px;
+    right: 30px;
+
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    color: #FFF;
+
+    padding: 9px 15px;
+    background: #000;
+    border-radius: 17.5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    > div {
+        margin-right: 5px;
+    }
+}

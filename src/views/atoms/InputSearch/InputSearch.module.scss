@@ -1,0 +1,44 @@
+.InputSearch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: var(--search-background);
+    margin: auto;
+    padding: 5px 20px;
+    border: 1px solid transparent;
+    border-radius: 23px;
+
+    :global() {
+        input {
+            margin-left: 10px;
+            padding: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+
+            font-size: var(--normal-font-size);
+            line-height: var(--normal-line-height);
+
+            flex: 1 1 95%;
+        }
+    }
+    
+    .Close {
+        display: none;
+        position: absolute;
+        padding: 5px;
+        right: 10px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    &.Filled {
+        border-color: var(--link-color);
+        background-color: #FFF;
+
+        .Close {
+            display: block;
+        }
+    }
+}
