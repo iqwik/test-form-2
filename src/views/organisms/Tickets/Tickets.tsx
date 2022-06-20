@@ -22,7 +22,7 @@ const Tickets = (): JSX.Element => {
                     <TicketsContent />
                 </PageBlock.Content>
             </PageBlock>
-            <TicketsPagination />
+            {tickets.length && (<TicketsPagination />)}
         </div>
     )
 }

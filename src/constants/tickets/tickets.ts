@@ -1,24 +1,35 @@
 import { ITEMS } from '../../views/organisms/Tickets/views/atoms'
-import { ChoosenStatus } from '../../views/organisms/Tickets/Tickets.context'
-import tickets from './tickets.json'
 
-export const getTickets = (defaultStatus: ChoosenStatus = ITEMS.ALL) => {
-    if (defaultStatus === ITEMS.ALL) {
-        return tickets
+import tickets from './tickets.json'
+import { TicketsT, ChoosenStatus } from './tickets.types'
+
+export const getTickets = () => tickets
+
+export const getFilteredTicketsByStatus = (
+    ticketsList: Array<TicketsT | any> = [],
+    choosenStatus: ChoosenStatus = ITEMS.ALL,
+) => {
+    if (choosenStatus === ITEMS.ALL) {
+        return ticketsList
     }
 
-    const status = defaultStatus.toLowerCase()
-    return tickets.filter((ticket) => ticket.status === status)
+    const choosenStatusInLowerCase = choosenStatus.toLowerCase()
+    return ticketsList.filter((ticket) => ticket.status === choosenStatusInLowerCase)
 }
 
-export const getTicketsByTitle = (searchText = '', byForum = false) => {
+export const getTicketsByTitle = (
+    ticketsList: Array<TicketsT | any> = [],
+    searchText = '',
+    byForum = false,
+) => {
     if (!searchText.length) {
-        return tickets
+        return ticketsList
     }
 
-    return tickets.filter((ticket) => (
+    const searchTextInLowerCase = searchText.toLowerCase()
+    return ticketsList.filter((ticket) => (
         (byForum ? ticket.forum.title : ticket.title).toLowerCase()
-            .indexOf(searchText.toLowerCase()) !== -1
+            .indexOf(searchTextInLowerCase) !== -1
     ))
 }
 

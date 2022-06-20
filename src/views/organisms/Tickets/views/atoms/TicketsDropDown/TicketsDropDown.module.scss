@@ -7,16 +7,19 @@
     margin-right: 25px;
     cursor: pointer;
 
-    :global() {
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            width: 100%;
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        width: 100%;
 
-            li {
-                display: flex;
-                align-items: center;
+        li {
+            display: flex;
+            align-items: center;
+
+            &:global(.disabled) {
+                opacity: 0.35;
+                cursor: text;
             }
         }
     }

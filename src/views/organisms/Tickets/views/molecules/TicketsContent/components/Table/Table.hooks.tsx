@@ -38,14 +38,6 @@ export const useTable = (s) => {
                     direction,
                 })
 
-                // eslint-disable-next-line no-console
-                console.log({
-                    tickets,
-                    rows,
-                    sortedRows,
-                    currentSortedColumn,
-                })
-
                 setRows(sortedRows)
             }
         }

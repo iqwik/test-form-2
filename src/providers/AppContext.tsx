@@ -2,86 +2,96 @@ import React, {
     createContext, useCallback, useEffect, useMemo, useState,
 } from 'react'
 
+import { usePagination } from '../hooks'
 import {
-    getTickets, getTicketsByTitle, requestTickets, ticketsFormatOpts,
+    getFilteredTicketsByStatus,
+    getTickets,
+    getTicketsByTitle,
+    requestTickets,
+    ticketsFormatOpts,
 } from '../constants'
-import { ITEMS, TicketsDropDownSingleElementProps } from '../views/organisms/Tickets/views/atoms'
-
-const defaultContextProps = {
-    isLoading: false,
-    setIsLoading: () => {},
-    choosenStatus: ITEMS.ALL,
-    setChoosenStatus: () => {},
-    dropdownOpts: [],
-    tickets: [],
-    setTickets: () => {},
-
-    searchForumText: '',
-    setSearchForumText: () => {},
-    searchText: '',
-    setSearchText: () => {},
-    findTicketsByText: () => {},
-    clearSearchText: () => {},
-}
-
-type ChoosenStatus = typeof ITEMS[keyof typeof ITEMS]
-type AppContextType = {
-    isLoading: boolean
-    setIsLoading: (x: boolean) => void
-    choosenStatus: ChoosenStatus
-    setChoosenStatus: (x: any) => void
-    dropdownOpts: TicketsDropDownSingleElementProps[] | any
-    tickets: any[]
-    setTickets: (x: any) => void
-
-    searchForumText: string
-    setSearchForumText: (x: string) => void
-    searchText: string
-    setSearchText: (x: string) => void
-    findTicketsByText: (x: string, setX: (t: string) => void, y: boolean | undefined) => void
-    clearSearchText: (setX: (t: string) => void) => void
-}
+import { AppContextType, defaultContextProps } from './AppContext.types'
 
 export const AppContext = createContext<AppContextType>(defaultContextProps)
 
+export const CONTENT_PER_PAGE = 10
+
 const AppContextProvider = ({ children }): JSX.Element => {
-    const [isLoading, setIsLoading] = useState(defaultContextProps.isLoading)
-    const [tickets, setTickets] = useState(defaultContextProps.tickets)
-    const [choosenStatus, setChoosenStatus] = useState(defaultContextProps.choosenStatus)
+    const [isLoading, setIsLoading] = useState<AppContextType['isLoading']>(defaultContextProps.isLoading)
 
-    const [searchForumText, setSearchForumText] = useState(defaultContextProps.searchForumText)
-    const [searchText, setSearchText] = useState(defaultContextProps.searchText)
+    const allTickets: AppContextType['tickets'] = useMemo(() => getTickets(), [])
 
-    const dropdownOpts = useMemo(() => ticketsFormatOpts(getTickets()), [])
+    const [tickets, setTickets] = useState<AppContextType['tickets']>(defaultContextProps.tickets)
+    const [choosenStatus, setChoosenStatus] = useState<AppContextType['choosenStatus']>(defaultContextProps.choosenStatus)
+
+    const [searchForumText, setSearchForumText] = useState<AppContextType['searchForumText']>(defaultContextProps.searchForumText)
+    const [searchText, setSearchText] = useState<AppContextType['searchText']>(defaultContextProps.searchText)
+
+    const [pagiQtyAfterSearch, setPagiQtyAfterSearch] = useState<AppContextType['tickets'] | null>(null)
+
+    const {
+        totalPages,
+        nextPage,
+        prevPage,
+        firstContentIndex,
+        lastContentIndex,
+        page,
+        setPage,
+    } = usePagination({
+        contentPerPage: CONTENT_PER_PAGE,
+        count: pagiQtyAfterSearch || allTickets.length,
+    })
+
+    const currentTicketsList = useMemo(() => {
+        const currentList = allTickets.slice(firstContentIndex, lastContentIndex)
+        setTickets(currentList)
+        return currentList
+    }, [
+        allTickets,
+        firstContentIndex,
+        lastContentIndex,
+    ])
+
+    const dropdownOpts = useMemo(() => (
+        ticketsFormatOpts(searchForumText || searchText ? tickets : currentTicketsList)
+    ), [
+        tickets,
+        currentTicketsList,
+        searchForumText,
+        searchText,
+    ])
 
     useEffect(() => {
-        if (searchText.length) {
-            setSearchText(defaultContextProps.searchText)
-        }
-        if (searchForumText.length) {
-            setSearchForumText(defaultContextProps.searchForumText)
-        }
+        const currentList = searchForumText || searchText ? tickets : currentTicketsList
+
         requestTickets(setIsLoading, () => {
-            const ticketsList: any = getTickets(choosenStatus)
+            const ticketsList = getFilteredTicketsByStatus(currentList, choosenStatus)
             setTickets(ticketsList)
         })
-    }, [choosenStatus])
+    }, [choosenStatus, page])
 
     const findTicketsByText = useCallback((text, setText, byForum = false) => {
         requestTickets(setIsLoading, () => {
-            const ticketsList: any = getTicketsByTitle(text, byForum)
-            setTickets(ticketsList)
+            const ticketsList = getTicketsByTitle(allTickets, text, byForum)
+
             setText(text)
+            setPagiQtyAfterSearch(ticketsList.length)
+            setPage(1)
+            setTickets(ticketsList.length > CONTENT_PER_PAGE ? ticketsList.slice(firstContentIndex, lastContentIndex) : ticketsList)
         })
-    }, [])
+    }, [allTickets])
 
     const clearSearchText = useCallback((setText) => {
         requestTickets(setIsLoading, () => {
-            const ticketsList: any = getTicketsByTitle()
-            setTickets(ticketsList)
+            const ticketsList = allTickets.slice(firstContentIndex, lastContentIndex)
+
             setText(defaultContextProps.searchText)
+            setPagiQtyAfterSearch(null)
+            setPage(1)
+            setTickets(ticketsList)
+            setChoosenStatus(defaultContextProps.choosenStatus)
         })
-    }, [])
+    }, [allTickets])
 
     const value = useMemo(() => ({
         isLoading,
@@ -92,6 +102,15 @@ const AppContextProvider = ({ children }): JSX.Element => {
         tickets,
         setTickets,
 
+        count: pagiQtyAfterSearch || allTickets.length,
+        totalPages,
+        nextPage,
+        prevPage,
+        firstContentIndex,
+        lastContentIndex,
+        page,
+        setPage,
+
         searchForumText,
         setSearchForumText,
         searchText,
@@ -99,10 +118,18 @@ const AppContextProvider = ({ children }): JSX.Element => {
         findTicketsByText,
         clearSearchText,
     }), [
+        pagiQtyAfterSearch,
+        allTickets,
+        currentTicketsList,
+        tickets,
+        firstContentIndex,
+        lastContentIndex,
+        page,
+        totalPages,
+
         isLoading,
         choosenStatus,
         dropdownOpts,
-        tickets,
         searchForumText,
         searchText,
     ])

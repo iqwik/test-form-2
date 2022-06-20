@@ -13,6 +13,8 @@ const TicketsToolbar = () => {
         setChoosenStatus,
         searchText,
         setSearchText,
+        searchForumText,
+        setSearchForumText,
         findTicketsByText,
         clearSearchText,
     } = useContext(AppContext)
@@ -31,7 +33,12 @@ const TicketsToolbar = () => {
                 <InputSearch
                     value={searchText}
                     setValue={setSearchText}
-                    onSubmit={(value) => { findTicketsByText(value, setSearchText, false) }}
+                    onSubmit={(value) => {
+                        if (searchForumText.length) {
+                            setSearchForumText('')
+                        }
+                        findTicketsByText(value, setSearchText, false)
+                    }}
                     onCancel={() => { clearSearchText(setSearchText) }}
                     placeholder="Search Tickets"
                     width={240}

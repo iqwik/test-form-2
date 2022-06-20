@@ -1,11 +1,11 @@
 import React from 'react'
 import { isFunction } from 'lodash'
 
+import { ChoosenStatus } from '../../../../../../constants'
 import { ITEMS, ITEMS_COLORS, ITEMS_LABELS } from './TicketsDropDown.constants'
 
 export const defaultOptionValue = { label: null, value: null, quantity: null }
 
-type ChoosenStatus = typeof ITEMS[keyof typeof ITEMS]
 export type TicketsDropDownSingleElementProps = {
     label: typeof ITEMS_LABELS[keyof typeof ITEMS_LABELS]
     value: ChoosenStatus
@@ -37,7 +37,12 @@ const TicketsDropDownService = {
         this.optionsByValue = optionsByValue
     },
 
-    renderOption(value, optionsByValue, renderProp = 'value', withCounterIndent = false) {
+    renderOption(
+        value,
+        optionsByValue,
+        renderProp = 'value',
+        withCounterIndent = false,
+    ) {
         const option = optionsByValue[value]
         const counterStyle = ITEMS_COLORS[value]
         const onClick = () => {
@@ -51,7 +56,8 @@ const TicketsDropDownService = {
         return (
             <li
                 key={`option-${option.value}`}
-                onClick={onClick}
+                onClick={option.quantity > 0 ? onClick : () => {}}
+                className={option.quantity < 1 ? 'disabled' : ''}
             >
                 {option[renderProp]}
                 <span

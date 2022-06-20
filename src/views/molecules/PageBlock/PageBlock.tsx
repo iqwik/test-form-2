@@ -4,7 +4,7 @@ import { PageBlockHeader, PageBlockContent } from './components'
 
 import s from './PageBlock.module.scss'
 
-class PageBlock extends React.PureComponent {
+class PageBlock extends React.Component {
     static Header = PageBlockHeader
 
     static Content = PageBlockContent

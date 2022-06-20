@@ -7,6 +7,8 @@ import s from './SupportResourcesContent.module.scss'
 
 const SupportResourcesContent = () => {
     const {
+        searchText,
+        setSearchText,
         searchForumText,
         setSearchForumText,
         findTicketsByText,
@@ -24,7 +26,12 @@ const SupportResourcesContent = () => {
             <InputSearch
                 value={searchForumText}
                 setValue={setSearchForumText}
-                onSubmit={(value) => { findTicketsByText(value, setSearchForumText, true) }}
+                onSubmit={(value) => {
+                    if (searchText.length) {
+                        setSearchText('')
+                    }
+                    findTicketsByText(value, setSearchForumText, true)
+                }}
                 onCancel={() => { clearSearchText(setSearchForumText) }}
                 placeholder="Search support forum"
             />
