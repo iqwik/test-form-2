@@ -56,15 +56,15 @@ export const useTable = (s) => {
                     {...(index < 3
                         ? {
                             onClick: () => {
-                                setCurrentSortedColumn({
-                                    fieldName,
-                                    direction: (
-                                        // eslint-disable-next-line no-nested-ternary
-                                        currentSortedColumn.fieldName === fieldName && currentSortedColumn.direction < 2
-                                            ? currentSortedColumn.direction + 1
-                                            : currentSortedColumn.direction > 0 ? 0 : 1
-                                    ),
-                                })
+                                let { direction } = currentSortedColumn
+
+                                if (currentSortedColumn.fieldName === fieldName) {
+                                    direction += (direction === 2 ? -2 : 1)
+                                } else {
+                                    direction = 1
+                                }
+
+                                setCurrentSortedColumn({ fieldName, direction })
                             },
                         } : {}
                     )}
