@@ -54,19 +54,16 @@ const AppContextProvider = ({ children }): JSX.Element => {
 
     const dropdownOpts = useMemo(() => (
         ticketsFormatOpts(searchForumText || searchText ? tickets : currentTicketsList)
-    ), [
-        tickets,
-        currentTicketsList,
-        searchForumText,
-        searchText,
-    ])
+    ), [tickets, currentTicketsList])
 
     useEffect(() => {
         const currentList = searchForumText || searchText ? tickets : currentTicketsList
 
         requestTickets(setIsLoading, () => {
             const ticketsList = getFilteredTicketsByStatus(currentList, choosenStatus)
-            setTickets(ticketsList)
+            if (ticketsList.length) {
+                setTickets(ticketsList)
+            }
         })
     }, [choosenStatus, page])
 
@@ -74,12 +71,22 @@ const AppContextProvider = ({ children }): JSX.Element => {
         requestTickets(setIsLoading, () => {
             const ticketsList = getTicketsByTitle(allTickets, text, byForum)
 
-            setText(text)
+            const handledTickets = ticketsList.length > CONTENT_PER_PAGE
+                ? ticketsList.slice(firstContentIndex, lastContentIndex)
+                : ticketsList
+
             setPagiQtyAfterSearch(ticketsList.length)
             setPage(1)
-            setTickets(ticketsList.length > CONTENT_PER_PAGE ? ticketsList.slice(firstContentIndex, lastContentIndex) : ticketsList)
+            setChoosenStatus(defaultContextProps.choosenStatus)
+            setText(text)
+            setTimeout(() => { setTickets(handledTickets) })
         })
-    }, [allTickets])
+    }, [
+        allTickets,
+        page,
+        searchText,
+        searchForumText,
+    ])
 
     const clearSearchText = useCallback((setText) => {
         requestTickets(setIsLoading, () => {
@@ -88,8 +95,8 @@ const AppContextProvider = ({ children }): JSX.Element => {
             setText(defaultContextProps.searchText)
             setPagiQtyAfterSearch(null)
             setPage(1)
-            setTickets(ticketsList)
             setChoosenStatus(defaultContextProps.choosenStatus)
+            setTimeout(() => { setTickets(ticketsList) })
         })
     }, [allTickets])
 

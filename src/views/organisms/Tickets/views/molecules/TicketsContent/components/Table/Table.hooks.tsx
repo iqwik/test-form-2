@@ -3,7 +3,7 @@ import React, {
 } from 'react'
 import { cloneDeep } from 'lodash'
 
-import { capitalizeFirstLetter, parseDate } from '../../../../../../../../constants'
+import { capitalizeFirstLetter, parseDate, TicketsT } from '../../../../../../../../constants'
 import { AppContext } from '../../../../../../../../providers'
 import { Icon, ICONS_TYPES } from '../../../../../../../atoms'
 import { ITEMS_COLORS } from '../../../../atoms'
@@ -20,7 +20,11 @@ const defaultCurrentSortedColumn = { fieldName: null, direction: 0 }
 
 export const useTable = (s) => {
     const { tickets } = useContext(AppContext)
-    const [rows, setRows] = useState(cloneDeep(tickets))
+    const [rows, setRows] = useState<TicketsT[]>([])
+
+    useEffect(() => {
+        setRows(tickets)
+    }, [tickets])
 
     const [currentSortedColumn, setCurrentSortedColumn] = useState<CurrentSortedColumnType>(defaultCurrentSortedColumn)
 
